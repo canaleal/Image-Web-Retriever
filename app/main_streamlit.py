@@ -5,7 +5,7 @@ from logging import raiseExceptions
 import streamlit as st
 from helpers import checkIfFolderExistsAndCreateIfNot, checkInternetConnection, downloadListOfImagesFromUrl, getListOfPostsThatHaveJPGorPNG, downloadListOfImagesFromUrl
 from instance import createRedditObject, getSubreddit, getSubredditHotPosts, getSubredditNewPosts, getSubredditTopPosts, getUser, getUserHotPosts, getUserNewPosts, getUserTopPosts
-
+from service import getImageCollection
 
 if __name__ == "__main__":
     try:
@@ -32,24 +32,7 @@ if __name__ == "__main__":
             if submit_button:
                 if search != '' and count != 0 and topic != '' and popularity != '':
                     
-                    if topic == 'Subreddit':
-                        subreddit = getSubreddit(reddit_object, search)
-                        if popularity == 'Hot':
-                            images = getSubredditHotPosts(subreddit, count)
-                        elif popularity == 'New':
-                            images = getSubredditNewPosts(subreddit, count)
-                        elif popularity == 'Top':
-                            images = getSubredditTopPosts(subreddit, count)       
-                            
-                    elif topic == 'User':
-                        user = getUser(reddit_object, search)
-                        if popularity == 'Hot':
-                            images = getUserHotPosts(user, count)
-                        elif popularity == 'New':
-                            images = getUserNewPosts(user, count)
-                        elif popularity == 'Top':
-                            images = getUserTopPosts(user, count)
-                            
+                    images = getImageCollection(topic, reddit_object, search, count, popularity) 
                     try:
                         images = getListOfPostsThatHaveJPGorPNG(images)
                         if len(images) > 0:

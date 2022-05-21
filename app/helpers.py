@@ -24,9 +24,8 @@ def checkIfFolderExistsAndCreateIfNot(folderName):
 
 def getListOfPostsThatHaveJPGorPNG(posts):
     listOfPosts = []
-    print(posts)
     for post in posts:
-        logging.error(post)
+        logging.info(f'Raw => {post} : {post.url}')
         try:
             if  post.url.endswith('.jpg') or post.url.endswith('.png'):
                 listOfPosts.append(post)
@@ -39,6 +38,7 @@ def getListOfPostsThatHaveJPGorPNG(posts):
     
 def downloadImageToFileGiveUrl(url, fileName):
     try:
+        logging.info(f'Downloading {url} to {fileName}')
         urlretrieve(url, fileName)
     except:
         pass
