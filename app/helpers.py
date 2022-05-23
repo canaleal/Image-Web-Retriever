@@ -42,8 +42,16 @@ def downloadImageToFileGiveUrl(url, fileName):
         urlretrieve(url, fileName)
     except:
         pass
+    
+
 
 def downloadListOfImagesFromUrl(search, listOfImages):
     checkIfFolderExistsAndCreateIfNot(f'app/output/{search}')
     for image in listOfImages:
         downloadImageToFileGiveUrl(image.url, f'app/output/{search}/{image.id}.jpg')
+        
+
+
+def saveImageToDatabase(database, listOfImages):
+    for image in listOfImages:
+        database.insert_data(image)

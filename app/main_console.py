@@ -1,9 +1,11 @@
 # Created by: Alex Canales on May 21, 2022
 
+from cmath import log
 import logging
 from helpers import checkIfFolderExistsAndCreateIfNot, checkInternetConnection, downloadListOfImagesFromUrl, getListOfPostsThatHaveJPGorPNG, downloadListOfImagesFromUrl
 from instance import createRedditObject
 from service import getImageCollection
+from database import Database
 
 # Set logging to info
 logging.basicConfig(level = logging.INFO)
@@ -44,12 +46,20 @@ def askForPopularityFromValidArray(validArray):
             popularity = ''
     return popularity
 
+def getPopularityValueInteger(popularity):
+    if popularity == 'Hot':
+        return 1
+    elif popularity == 'New':
+        return 2
+    elif popularity == 'Top':
+        return 3
 
 if __name__ == "__main__":
     try:
         connection = checkInternetConnection()
         checkIfFolderExistsAndCreateIfNot('app/output')
         reddit_object = createRedditObject()
+        database_object = Database()
 
         if reddit_object and connection:
 
@@ -63,6 +73,7 @@ if __name__ == "__main__":
             count = askForNumberOfPosts()
             topic = askForTopicFromValidArray(['Subreddit', 'User'])
             popularity = askForPopularityFromValidArray(['Hot', 'New', 'Top'])
+            popularity_value = getPopularityValueInteger(popularity)
 
             if search != '' and count != 0 and topic != '' and popularity != '':
 
@@ -78,6 +89,14 @@ if __name__ == "__main__":
                         logging.info('Downloading images...')
                         downloadListOfImagesFromUrl(search, images)
                         logging.info('Done!')
+                        
+                       
+                        if database_object.connection:
+                            logging.info('Saving images to database...')
+                            database_object.insert_data(search, images, popularity_value)
+                            database_object.close_database()
+                            logging.info('Done!')
+                        
                     else:
                         logging.error('No Images Found!')
 
