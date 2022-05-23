@@ -36,6 +36,12 @@ def askForTopicFromValidArray(validArray):
             topic = ''
     return topic
 
+def getTopicValueInteger(topic):
+    if topic == 'Subreddit':
+        return 1
+    elif topic == 'User':
+        return 2
+
 
 def askForPopularityFromValidArray(validArray):
     popularity = ''
@@ -72,6 +78,7 @@ if __name__ == "__main__":
             search = askForSearchInput()
             count = askForNumberOfPosts()
             topic = askForTopicFromValidArray(['Subreddit', 'User'])
+            topic_value = getTopicValueInteger(topic)
             popularity = askForPopularityFromValidArray(['Hot', 'New', 'Top'])
             popularity_value = getPopularityValueInteger(popularity)
 
@@ -93,7 +100,7 @@ if __name__ == "__main__":
                        
                         if database_object.connection:
                             logging.info('Saving images to database...')
-                            database_object.insert_data(search, images, popularity_value)
+                            database_object.insert_images_data(search, topic_value, popularity_value, images)
                             database_object.close_database()
                             logging.info('Done!')
                         

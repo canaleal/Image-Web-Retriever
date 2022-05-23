@@ -58,13 +58,13 @@ class Database:
         self.close_connection_if_open()
         self.close_cursor_if_open()
         
-    def insert_data(self, name, listOfImages, popularity):
+    def insert_images_data(self, name, topic, popularity, listOfImages):
        
         try:
             if self.cursor:
-                query = f'INSERT INTO images(name, post_link, post_popularity) VALUES (%s,%s,%s);'
+                query = f'INSERT INTO images(name, topic, post_popularity, post_link, post_title) VALUES (%s,%s,%s,%s,%s);'
                 for image in listOfImages:
-                    self.cursor.execute(query, (name, image.url, popularity))
+                    self.cursor.execute(query, (name, topic, popularity, image.url, image.title) )
                 self.connection.commit()
         except Error as error:
             logging.error(error)
