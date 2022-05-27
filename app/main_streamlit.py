@@ -4,8 +4,7 @@
 from logging import raiseExceptions
 import streamlit as st
 from helpers import checkIfFolderExistsAndCreateIfNot, checkInternetConnection, downloadListOfImagesFromUrl, getListOfPostsThatHaveJPGorPNG, downloadListOfImagesFromUrl
-from instance import createRedditObject, getSubreddit, getSubredditHotPosts, getSubredditNewPosts, getSubredditTopPosts, getUser, getUserHotPosts, getUserNewPosts, getUserTopPosts
-from service import getImageCollection
+from instance import createRedditObject, getImageCollection
 
 if __name__ == "__main__":
     try:

@@ -3,8 +3,7 @@
 from cmath import log
 import logging
 from helpers import checkIfFolderExistsAndCreateIfNot, checkInternetConnection, downloadListOfImagesFromUrl, getListOfPostsThatHaveJPGorPNG, downloadListOfImagesFromUrl
-from instance import createRedditObject
-from service import getImageCollection
+from instance import createRedditObject, getImageCollection
 from database import Database
 
 # Set logging to info
