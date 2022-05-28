@@ -35,18 +35,26 @@ def load_images_page(name, images_container_list):
     return generalImage_list
 
 
-def load_html_page(search):
+def load_html_page(search, count):
+    pages = int(count/42)
     images_container_list = []
-    with urllib.request.urlopen(search) as response:
-        html = response.read()
-        soup = BeautifulSoup(html, 'html.parser')
-        image_box = soup.find('div', attrs={'class': 'thumbnail-container'})
+    pid = 0
+    for i in range(pages):
+        
+        tempSearch = f'{search}&pid={pid}'
+        logging.info(f'Loading Page: {tempSearch}')
+        with urllib.request.urlopen(tempSearch) as response:
+            html = response.read()
+            soup = BeautifulSoup(html, 'html.parser')
+            image_box = soup.find('div', attrs={'class': 'thumbnail-container'})
 
-        try:
-            for a in image_box.find_all('a', href=True):
-                images_container_list.append(a['href'])
-        except:
-            logging.error('No Images Found!')
+            try:
+                for a in image_box.find_all('a', href=True):
+                    images_container_list.append(a['href'])
+            except:
+                logging.error('No Images Found!')
+        
+        pid+=42
 
     return images_container_list
 
@@ -56,6 +64,20 @@ def askForSearchInput():
     while search == '':
         search = input('Search: ')
     return search
+
+def getCount(search):
+    count = 0
+    with urllib.request.urlopen(search) as response:
+        html = response.read()
+        soup = BeautifulSoup(html, 'html.parser')
+        pagination = soup.find('div', attrs={'id': 'paginator'})
+        try:
+            final_tag = pagination.find_all('a', href=True)[-1]        
+            final_tag_url = final_tag['href']
+            count = int(final_tag_url.split('=')[-1])
+        except:
+            logging.error('No Images Found!')
+    return count
 
 if __name__ == "__main__":
    
@@ -67,13 +89,13 @@ if __name__ == "__main__":
 
         if connection:
 
-            search = ''
             search = askForSearchInput()
-            search_url = f'https://gelbooru.com/index.php?page=post&s=list&tags={search}&pid=0'
+            search_url = f'https://gelbooru.com/index.php?page=post&s=list&tags={search}'
             search_connection = checkIfUrlExists(search_url)
+            
             if search_url != '' and search_connection and database_object.connection:
-                
-                images_container_list = load_html_page(search_url)
+                count = getCount(search_url)
+                images_container_list = load_html_page(search_url, count)
                 generalImage_list = load_images_page(search, images_container_list)
 
                 try:
