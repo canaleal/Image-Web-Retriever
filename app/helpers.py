@@ -13,6 +13,13 @@ def checkInternetConnection():
         return False
 
 
+def checkIfUrlExists(url):
+    try:
+        requests.get(url)
+        return True
+    except:
+        return False
+
 def checkIfFolderExistsAndCreateIfNot(folderName):
 
     if not os.path.exists(folderName):

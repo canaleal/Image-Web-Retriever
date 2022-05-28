@@ -58,14 +58,23 @@ class Database:
         self.close_connection_if_open()
         self.close_cursor_if_open()
         
-    def insert_images_data(self, name, topic, popularity, listOfImages):
+    def insert_reddit_image_data(self, name, topic, popularity, listOfImages):
        
         try:
             if self.cursor:
-                query = f'INSERT INTO images(name, topic, post_popularity, post_link, post_title) VALUES (%s,%s,%s,%s,%s);'
+                query = f'INSERT INTO reddit_images(name, topic, post_popularity, post_link, post_title) VALUES (%s,%s,%s,%s,%s);'
                 for image in listOfImages:
                     self.cursor.execute(query, (name, topic, popularity, image.url, image.title) )
                 self.connection.commit()
         except Error as error:
             logging.error(error)
     
+    def insert_general_image_data(self, listOfImages):    
+        try:
+            if self.cursor:
+                query = f'INSERT INTO general_images(name, container_link, image_link) VALUES (%s,%s,%s);'
+                for generalImage in listOfImages:
+                    self.cursor.execute(query, (generalImage.name, generalImage.container_link, generalImage.image_link) )
+                self.connection.commit()
+        except Error as error:
+            logging.error(error)

@@ -99,7 +99,7 @@ if __name__ == "__main__":
                        
                         if database_object.connection:
                             logging.info('Saving images to database...')
-                            database_object.insert_images_data(search, topic_value, popularity_value, images)
+                            database_object.insert_reddit_image_data(search, topic_value, popularity_value, images)
                             database_object.close_database()
                             logging.info('Done!')
                         
