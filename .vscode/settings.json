@@ -3,5 +3,12 @@
         "tests"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "python.analysis.extraPaths": [
+        "./app/utils",
+        "./app/services",
+        "./app/db",
+        "./app/constants",
+        "./app/models"
+    ]
 }
