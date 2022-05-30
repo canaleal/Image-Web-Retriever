@@ -1,69 +1,23 @@
 # Created by: Alex Canales on May 21, 2022
 
-from cmath import log
 import logging
-from helpers import checkIfFolderExistsAndCreateIfNot, checkInternetConnection, downloadListOfImagesFromUrl, getListOfPostsThatHaveJPGorPNG, downloadListOfImagesFromUrl
-from instance import createRedditObject, getImageCollection
-from database import Database
+from utils.check_folder import checkIfFolderExistsAndCreateIfNot
+from utils.check_internet import checkInternetConnection
+from utils.download_image import getListOfPostsThatHaveJPGorPNG, downloadListOfImagesFromUrl
+from utils.ask_input import askForSearchInput, askForRedditNumberOfPosts, askForRedditTopicFromValidArray, getRedditTopicValueInteger, askForRedditPopularityFromValidArray, getRedditPopularityValueInteger
+
+from services.reddit_service import Reddit
+from db.database import Database
 
 # Set logging to info
 logging.basicConfig(level = logging.INFO)
 
-def askForNumberOfPosts():
-    count = 0
-    while count == 0:
-        try:
-            count = int(input('How many posts for Images? '))
-        except ValueError:
-            print('Please enter a number')
-    return count
-
-
-def askForSearchInput():
-    search = ''
-    while search == '':
-        search = input('Search: ')
-    return search
-
-
-def askForTopicFromValidArray(validArray):
-    topic = ''
-    while topic == '':
-        topic = input('Topic [Subreddit, User]: ')
-        if topic not in validArray:
-            print('Please enter a valid option')
-            topic = ''
-    return topic
-
-def getTopicValueInteger(topic):
-    if topic == 'Subreddit':
-        return 1
-    elif topic == 'User':
-        return 2
-
-
-def askForPopularityFromValidArray(validArray):
-    popularity = ''
-    while popularity == '':
-        popularity = input('Popularity [Hot, New, Top]: ')
-        if popularity not in validArray:
-            print('Please enter a valid option')
-            popularity = ''
-    return popularity
-
-def getPopularityValueInteger(popularity):
-    if popularity == 'Hot':
-        return 1
-    elif popularity == 'New':
-        return 2
-    elif popularity == 'Top':
-        return 3
 
 if __name__ == "__main__":
     try:
         connection = checkInternetConnection()
         checkIfFolderExistsAndCreateIfNot('app/output')
-        reddit_object = createRedditObject()
+        reddit_object = Reddit()
         database_object = Database()
 
         if reddit_object and connection:
@@ -75,15 +29,15 @@ if __name__ == "__main__":
             popularity = ''
 
             search = askForSearchInput()
-            count = askForNumberOfPosts()
-            topic = askForTopicFromValidArray(['Subreddit', 'User'])
-            topic_value = getTopicValueInteger(topic)
-            popularity = askForPopularityFromValidArray(['Hot', 'New', 'Top'])
-            popularity_value = getPopularityValueInteger(popularity)
+            count = askForRedditNumberOfPosts()
+            topic = askForRedditTopicFromValidArray(['Subreddit', 'User'])
+            topic_value = getRedditTopicValueInteger(topic)
+            popularity = askForRedditPopularityFromValidArray(['Hot', 'New', 'Top'])
+            popularity_value = getRedditPopularityValueInteger(popularity)
 
             if search != '' and count != 0 and topic != '' and popularity != '':
 
-                images = getImageCollection(topic, reddit_object, search, count, popularity)
+                images = reddit_object.getImageCollection(topic, search, count, popularity)
             
                 try:
                     images = getListOfPostsThatHaveJPGorPNG(images)
@@ -93,6 +47,7 @@ if __name__ == "__main__":
                             logging.info(f'Valid => {image} : {image.url}')
 
                         logging.info('Downloading images...')
+                        checkIfFolderExistsAndCreateIfNot(f'app/output/{search}')
                         downloadListOfImagesFromUrl(search, images)
                         logging.info('Done!')
                         

@@ -2,18 +2,16 @@
 import logging
 import urllib.request
 from bs4 import BeautifulSoup
-from helpers import checkIfFolderExistsAndCreateIfNot, checkInternetConnection, checkIfUrlExists
-from database import Database
+from utils.check_folder import checkIfFolderExistsAndCreateIfNot
+from utils.check_internet import checkInternetConnection, checkIfUrlExists
+
+from utils.ask_input import askForSearchInput
+
+from db.database import Database
+from models.general_image import GeneralImage
 
 # Set logging to info
 logging.basicConfig(level = logging.INFO)
-
-class GeneralImage:
-
-    def __init__(self, name, container_link, image_link):
-        self.name = name
-        self.container_link = container_link
-        self.image_link = image_link
 
 
 def load_images_page(name, images_container_list):
@@ -59,11 +57,7 @@ def load_html_page(search, count):
     return images_container_list
 
 
-def askForSearchInput():
-    search = ''
-    while search == '':
-        search = input('Search: ')
-    return search
+
 
 def getCount(search):
     count = 0

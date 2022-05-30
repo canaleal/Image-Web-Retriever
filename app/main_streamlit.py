@@ -3,14 +3,17 @@
 
 from logging import raiseExceptions
 import streamlit as st
-from helpers import checkIfFolderExistsAndCreateIfNot, checkInternetConnection, downloadListOfImagesFromUrl, getListOfPostsThatHaveJPGorPNG, downloadListOfImagesFromUrl
-from instance import createRedditObject, getImageCollection
+
+from utils.check_folder import checkIfFolderExistsAndCreateIfNot
+from utils.check_internet import checkInternetConnection
+from utils.download_image import getListOfPostsThatHaveJPGorPNG, downloadListOfImagesFromUrl
+from services.reddit_service import Reddit
 
 if __name__ == "__main__":
     try:
         connection = checkInternetConnection()
         checkIfFolderExistsAndCreateIfNot('app/output')
-        reddit_object = createRedditObject()
+        reddit_object = Reddit()
         
         if reddit_object and connection:
 
@@ -31,7 +34,7 @@ if __name__ == "__main__":
             if submit_button:
                 if search != '' and count != 0 and topic != '' and popularity != '':
                     
-                    images = getImageCollection(topic, reddit_object, search, count, popularity) 
+                    images = reddit_object.getImageCollection(topic, search, count, popularity) 
                     try:
                         images = getListOfPostsThatHaveJPGorPNG(images)
                         if len(images) > 0:
@@ -40,9 +43,10 @@ if __name__ == "__main__":
                                 st.image(image.url, width=200)
                                 st.write(image.url)
                             
-                            
+                         
+                            checkIfFolderExistsAndCreateIfNot(f'app/output/{search}')
                             downloadListOfImagesFromUrl(search, images)
-
+                          
                         else:
                             st.error('No Images Found!')
                     
