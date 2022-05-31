@@ -58,6 +58,15 @@ class Database:
         self.close_connection_if_open()
         self.close_cursor_if_open()
         
+    def get_bool_if_value_in_column_exists(self, table, column, value):
+        try:
+            if self.cursor:
+                query = f'SELECT EXISTS(SELECT 1 FROM {table} WHERE {column} = %s);'
+                self.cursor.execute(query, (value,))
+                return self.cursor.fetchone()[0]
+        except Error as error:
+            logging.error(error)
+        
     def insert_reddit_image_data(self, name, topic, popularity, listOfImages):
        
         try:
@@ -71,10 +80,16 @@ class Database:
     
     def insert_general_image_data(self, listOfImages):    
         try:
-            if self.cursor:
+            
+            exists = self.get_bool_if_value_in_column_exists('general_images', 'name', listOfImages[0].name)
+            
+            if self.cursor and not exists:
                 query = f'INSERT INTO general_images(name, container_link, image_link) VALUES (%s,%s,%s);'
                 for generalImage in listOfImages:
                     self.cursor.execute(query, (generalImage.name, generalImage.container_link, generalImage.image_link) )
                 self.connection.commit()
+            else:
+                logging.error('Image already exists in database')
+                
         except Error as error:
             logging.error(error)
