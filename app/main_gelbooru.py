@@ -10,6 +10,10 @@ from utils.ask_input import askForSearchInput
 from db.database import Database
 from models.general_image import GeneralImage
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 # Set logging to info
 logging.basicConfig(level = logging.INFO)
 
@@ -84,7 +88,8 @@ if __name__ == "__main__":
         if connection:
 
             search = askForSearchInput()
-            search_url = f'https://gelbooru.com/index.php?page=post&s=list&tags={search}'
+            gel_url = os.getenv('GEL_URL')
+            search_url = f'https://{gel_url}/index.php?page=post&s=list&tags={search}'
             search_connection = checkIfUrlExists(search_url)
             
             if search_url != '' and search_connection and database_object.connection:
@@ -100,7 +105,7 @@ if __name__ == "__main__":
 
                         if database_object.connection:
                             logging.info('Saving images to database...')
-                            database_object.insert_general_image_data(generalImage_list)
+                            database_object.insert_gel_general_image_data(generalImage_list)
                             database_object.close_database()
                             logging.info('Done!')
 

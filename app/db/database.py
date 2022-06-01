@@ -93,3 +93,35 @@ class Database:
                 
         except Error as error:
             logging.error(error)
+            
+    def insert_rule_general_image_data(self, listOfImages):    
+        try:
+            
+            exists = self.get_bool_if_value_in_column_exists('rule_general_images', 'name', listOfImages[0].name)
+            
+            if self.cursor and not exists:
+                query = f'INSERT INTO rule_general_images(name, container_link, image_link) VALUES (%s,%s,%s);'
+                for generalImage in listOfImages:
+                    self.cursor.execute(query, (generalImage.name, generalImage.container_link, generalImage.image_link) )
+                self.connection.commit()
+            else:
+                logging.error('Image already exists in database')
+                
+        except Error as error:
+            logging.error(error)
+            
+    def insert_gel_general_image_data(self, listOfImages):    
+        try:
+            
+            exists = self.get_bool_if_value_in_column_exists('gel_general_images', 'name', listOfImages[0].name)
+            
+            if self.cursor and not exists:
+                query = f'INSERT INTO gel_general_images(name, container_link, image_link) VALUES (%s,%s,%s);'
+                for generalImage in listOfImages:
+                    self.cursor.execute(query, (generalImage.name, generalImage.container_link, generalImage.image_link) )
+                self.connection.commit()
+            else:
+                logging.error('Image already exists in database')
+                
+        except Error as error:
+            logging.error(error)
