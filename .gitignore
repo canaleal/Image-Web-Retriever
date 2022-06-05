@@ -32,6 +32,12 @@ MANIFEST
 *.manifest
 *.spec
 
+
+# dev data
+*-dev.json
+*-dev.js
+*-dev.jsx
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
