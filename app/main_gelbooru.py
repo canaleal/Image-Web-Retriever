@@ -1,4 +1,5 @@
 # import libraries
+from cmath import log
 import logging
 import urllib.request
 from bs4 import BeautifulSoup
@@ -63,17 +64,22 @@ def load_html_page(search, count):
 
 
 
-def getCount(search):
+def get_count(search):
     count = 0
     with urllib.request.urlopen(search) as response:
         html = response.read()
         soup = BeautifulSoup(html, 'html.parser')
         pagination = soup.find('div', attrs={'id': 'paginator'})
         try:
-            final_tag = pagination.find_all('a', href=True)[-1]        
-            final_tag_url = final_tag['href']
-            count = int(final_tag_url.split('=')[-1])
-        except:
+        
+            final_tag = pagination.find_all('a', href=True)
+            if len(final_tag) > 0:
+                count = int(final_tag[-1]['href'].split('=')[-1])      
+            else:
+                count = 42;
+  
+        except Exception as e:
+            logging.error(e)
             logging.error('No Images Found!')
     return count
 
@@ -93,7 +99,7 @@ if __name__ == "__main__":
             search_connection = checkIfUrlExists(search_url)
             
             if search_url != '' and search_connection and database_object.connection:
-                count = getCount(search_url)
+                count = get_count(search_url)
                 images_container_list = load_html_page(search_url, count)
                 generalImage_list = load_images_page(search, images_container_list)
 

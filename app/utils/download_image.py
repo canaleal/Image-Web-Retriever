@@ -4,17 +4,17 @@ import logging
 from urllib.request import urlretrieve
 
 
-def getListOfPostsThatHaveJPGorPNG(posts):
-    listOfPosts = []
+def get_list_of_posts_with_jpg_png(posts):
+    list_of_posts = []
     for post in posts:
         logging.info(f'Raw => {post} : {post.url}')
         try:
-            if  post.url.endswith('.jpg') or post.url.endswith('.png'):
-                listOfPosts.append(post)
+            if post.url.endswith('.jpg') or post.url.endswith('.png'):
+                list_of_posts.append(post)
         except AttributeError:
             pass        
         
-    return listOfPosts
+    return list_of_posts
 
 
 

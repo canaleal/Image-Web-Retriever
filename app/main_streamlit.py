@@ -6,7 +6,7 @@ import streamlit as st
 
 from utils.check_folder import checkIfFolderExistsAndCreateIfNot
 from utils.check_internet import checkInternetConnection
-from utils.download_image import getListOfPostsThatHaveJPGorPNG, downloadListOfImagesFromUrl
+from utils.download_image import get_list_of_posts_with_jpg_png, downloadListOfImagesFromUrl
 from services.reddit_service import Reddit
 
 if __name__ == "__main__":
@@ -36,7 +36,7 @@ if __name__ == "__main__":
                     
                     images = reddit_object.getImageCollection(topic, search, count, popularity) 
                     try:
-                        images = getListOfPostsThatHaveJPGorPNG(images)
+                        images = get_list_of_posts_with_jpg_png(images)
                         if len(images) > 0:
                             st.success(f'{len(images)} - Images Found!')
                             for image in images:
