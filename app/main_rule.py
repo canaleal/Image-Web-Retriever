@@ -34,10 +34,9 @@ def load_images_page(name):
         response_json = response.json()
         
         for element in response_json:
-            
             container_url = element['file_url']
             image_url = element['preview_url']
-            logging.info(f'Loading Image: {image_url}')
+            logging.info(f'Loading Image: {container_url}')
            
         
             generalImage = GeneralImage(name, container_url, image_url)
@@ -72,7 +71,7 @@ if __name__ == "__main__":
                     if len(generalImage_list) > 0:
                         logging.info(f'{len(generalImage_list)} - Images Found!')
                         for generalImage in generalImage_list:
-                            logging.info(f'Valid => {generalImage.name} : {generalImage.image_link}')
+                            logging.info(f'Valid => {generalImage.name} : {generalImage.container_link}')
 
                         if database_object.connection:
                             logging.info('Saving images to database...')
